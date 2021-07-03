@@ -1,0 +1,3 @@
+[submodule "nlp/SPN4RE"]
+	path = nlp/SPN4RE
+	url = https://github.com/MartinJohannessen/SPN4RE.git
