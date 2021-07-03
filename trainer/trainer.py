@@ -96,7 +96,7 @@ class Trainer(nn.Module):
             f1 = result['f1']
             if f1 > best_f1:
                 print("Achieving Best Result on Test Set.", flush=True)
-                # torch.save({'state_dict': self.model.state_dict()}, self.args.generated_param_directory + " %s_%s_epoch_%d_f1_%.4f.model" %(self.model.name, self.args.dataset_name, epoch, result['f1']))
+                torch.save({'state_dict': self.model.state_dict()}, self.args.generated_param_directory + " %s_%s_epoch_%d_f1_%.4f.model" %(self.args.dataset_name, epoch, result['f1']))
                 best_f1 = f1
                 best_result_epoch = epoch
             # if f1 <= 0.3 and epoch >= 10:
