@@ -96,13 +96,8 @@ if __name__ == '__main__':
     set_seed(args.random_seed)
     data = build_data(args)
     model = SetPred4RE(args, data.relational_alphabet.size())
-    if inference == True:
-        model.load_state_dict(torch.load(PATH)['state_dict'])
-        model.eval()
-        sentences = model.data_process_inference(input_doc)
-        input_ids, attention_mask, info = model.data_process_inference2(sentences)
-        triples = model.gen_triples(input_ids, attention_mask, info)
-        print(triples)
-    else:
+    if inference == False:
         trainer = Trainer(model, data, args)
         trainer.train_model()
+
+
