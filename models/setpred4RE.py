@@ -67,9 +67,7 @@ class SetPred4RE(nn.Module):
         from utils.functions import remove_accents      
         samples = []
         lines = input_doc.splitlines()
-        
-
-        tokenizer = BertTokenizer.from_pretrained(args.bert_directory, do_lower_case=False)
+        tokenizer = BertTokenizer.from_pretrained(self.args.bert_directory, do_lower_case=False)
         for i in range(len(lines)):
             token_sent = [tokenizer.cls_token] + tokenizer.tokenize(remove_accents(lines[i])) + [tokenizer.sep_token]
             sent_id = tokenizer.convert_tokens_to_ids(token_sent)
@@ -87,7 +85,7 @@ class SetPred4RE(nn.Module):
         for idx, (seq, seqlen) in enumerate(zip(sent_ids, sent_lens)):
             input_ids[idx, :seqlen] = torch.LongTensor(seq)
             attention_mask[idx, :seqlen] = torch.FloatTensor([1] * seqlen)
-        if args.use_gpu:
+        if self.args.use_gpu:
             input_ids = input_ids.cuda()
             attention_mask = attention_mask.cuda()
         info = {"seq_len": sent_lens, "sent_idx": sent_idx}
