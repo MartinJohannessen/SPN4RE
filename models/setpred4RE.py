@@ -61,36 +61,6 @@ class SetPred4RE(nn.Module):
             targets = [{k: torch.tensor(v, dtype=torch.long, requires_grad=False) for k, v in t.items()} for t in targets]
         info = {"seq_len": sent_lens, "sent_idx": sent_idx}
         return input_ids, attention_mask, targets, info
-    
-    def data_process_inference(self, input_doc):
-        from transformers import BertTokenizer
-        from utils.functions import remove_accents      
-        samples = []
-        lines = input_doc.splitlines()
-        tokenizer = BertTokenizer.from_pretrained(self.args.bert_directory, do_lower_case=False)
-        for i in range(len(lines)):
-            token_sent = [tokenizer.cls_token] + tokenizer.tokenize(remove_accents(lines[i])) + [tokenizer.sep_token]
-            sent_id = tokenizer.convert_tokens_to_ids(token_sent)
-            samples.append([i, sent_id])
-        return samples
-    
-    def data_process_inference2(self, sent_list):
-        sent_size = len(sent_list)
-        sent_idx = [ele[0] for ele in sent_list]
-        sent_ids = [ele[1] for ele in sent_list]
-        sent_lens = list(map(len, sent_ids))
-        max_sent_len = max(sent_lens)
-        input_ids = torch.zeros((sent_size, max_sent_len), requires_grad=False).long()
-        attention_mask = torch.zeros((sent_size, max_sent_len), requires_grad=False, dtype=torch.float32)
-        for idx, (seq, seqlen) in enumerate(zip(sent_ids, sent_lens)):
-            input_ids[idx, :seqlen] = torch.LongTensor(seq)
-            attention_mask[idx, :seqlen] = torch.FloatTensor([1] * seqlen)
-        if self.args.use_gpu:
-            input_ids = input_ids.cuda()
-            attention_mask = attention_mask.cuda()
-        info = {"seq_len": sent_lens, "sent_idx": sent_idx}
-        return input_ids, attention_mask, info
-
 
     @staticmethod
     def get_loss_weight(args):
